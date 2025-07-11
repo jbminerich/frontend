@@ -1,0 +1,116 @@
+/* globals.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Open+Sans:wght@400;600&display=swap');
+
+:root {
+  --primary-pink: #d94977;
+  --font-accent: 'Great Vibes', cursive;
+  --font-body: 'Open Sans', sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background: #f9f9f9;
+  color: #222;
+}
+
+a {
+  color: var(--primary-pink);
+  text-decoration: none;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+@keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .nav-link {
+    color: var(--primary-pink);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-weight: 600;
+  }
+  
+  .nav-link:hover {
+    color: #b8325d;
+    transform: translateY(-2px);
+    text-decoration: underline;
+  }
+
+  .service-button {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0.5rem 0;
+    text-align: left;
+    width: 100%;
+    color: var(--primary-pink);
+    transition: all 0.2s ease;
+  }
+  
+  .service-button:hover {
+    color: #b8325d;
+    text-shadow: 0 0 6px rgba(217, 73, 119, 0.5);
+  }
+  
+  .form-input {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .form-input:focus {
+    outline: none;
+    border-color: var(--primary-pink);
+    box-shadow: 0 0 0 2px rgba(217, 73, 119, 0.2);
+  }
+  
+  .submit-button {
+    padding: 0.75rem 1.5rem;
+    background-color: var(--primary-pink);
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  
+  .submit-button:hover {
+    background-color: #b8325d;
+    transform: translateY(-2px);
+  }
+  
+  
