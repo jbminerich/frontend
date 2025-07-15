@@ -1,23 +1,34 @@
+import Image from 'next/image'
+
 export default function Hero() {
-    return (
-      <section style={{ background: '#e0f7fa', padding: '4rem 1rem', textAlign: 'center' }}>
-        <h2>Professional Cleaning Services</h2>
-        <p>Reliable, affordable, and spotless — just how you like it.</p>
-        <a
-            href="#booking"
-            style={{
-                display: 'inline-block',
-                marginTop: '1rem',
-                padding: '0.75rem 1.5rem',
-                background: 'var(--primary-pink)',
-                color: '#fff',
-                borderRadius: '5px',
-                fontWeight: 'bold',
-            }}
-            >
+  return (
+    <section className="hero-section">
+      <div className="hero-content">
+        {/* Left Side */}
+        <div className="hero-text">
+          <h2>Professional Cleaning Services</h2>
+          <p>Reliable, affordable, and spotless — just how you like it.</p>
+          <a href="#booking" className="hero-button">
             Book Now
-        </a>
-      </section>
-    );
-  }
-  
+          </a>
+
+          <div className="trust-badges">
+            <div className="badge">⭐ Top Rated</div>
+            <div className="badge">💬 5-Star Service</div>
+          </div>
+        </div>
+
+        {/* Right Side */}
+        <div className="hero-image">
+          <Image
+            src="/images/hero-cleaner.png"
+            alt="Cleaning professional smiling with spray bottle"
+            width={400}
+            height={400}
+            priority
+          />
+        </div>
+      </div>
+    </section>
+  )
+}

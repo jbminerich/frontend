@@ -1,6 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+
+
 
 type Service = {
   id: string;
@@ -15,7 +19,7 @@ export default function BookingForm() {
     phone: '',
     address: '',
     serviceType: '',
-    requestedDateTime: '',
+    requestedDateTime: new Date(),
   });
   const [success, setSuccess] = useState(false);
 
@@ -56,16 +60,19 @@ export default function BookingForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+  
     const payload = {
-        ...formData,
-        requestedDateTime: formData.requestedDateTime, // don't convert to Date object
-      };
+      ...formData,
+      serviceType: formData.serviceType, // explicitly passing the ID for the relationship field
+      requestedDateTime: new Date(formData.requestedDateTime).toISOString(), // just in case
+    };
+  
     const res = await fetch('http://192.168.254.156:3000/api/bookingRequests', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
+      body: JSON.stringify(payload), // << use the corrected payload
     });
-
+  
     if (res.ok) {
       setSuccess(true);
       setFormData({
@@ -74,17 +81,18 @@ export default function BookingForm() {
         phone: '',
         address: '',
         serviceType: '',
-        requestedDateTime: '',
+        requestedDateTime: new Date(),
       });
     } else {
       alert('There was an error submitting your request.');
     }
   };
+  
 
   return (
     <section id="booking" className="container" style={{ padding: '3rem 0' }}>
       <h3 style={{ fontSize: '1.8rem', marginBottom: '1.5rem' }}>Book a Cleaning</h3>
-      {success && <p style={{ color: 'green' }}>Request submitted! We'll be in touch shortly.</p>}
+      {success && <p className="success-message">Request submitted! We'll be in touch shortly.</p>}
 
       <form onSubmit={handleSubmit} style={{ maxWidth: '600px', display: 'grid', gap: '1rem' }}>
         <input
@@ -132,15 +140,20 @@ export default function BookingForm() {
             <option key={service.id} value={service.id}>{service.title}</option>
           ))}
         </select>
-        <input
-          name="requestedDateTime"
-          type="datetime-local"
-          value={formData.requestedDateTime}
-          onChange={handleChange}
-          min={getLocalDateTimeString()}
-          required
-          className="form-input"
-        />
+        <label className="form-label">Select Date & Time</label>
+        <DatePicker
+  selected={formData.requestedDateTime}
+  onChange={(date: Date) => setFormData({ ...formData, requestedDateTime: date })}
+  showTimeSelect
+  dateFormat="Pp"
+  minDate={new Date()}
+  minTime={new Date(new Date().setHours(7, 0, 0, 0))}
+  maxTime={new Date(new Date().setHours(20, 0, 0, 0))}
+  className="form-input"
+/>
+
+
+
         <button
           type="submit"
           className="submit-button"
