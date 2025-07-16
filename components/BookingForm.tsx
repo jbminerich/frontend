@@ -92,7 +92,7 @@ export default function BookingForm() {
   return (
     <section id="booking" className="container" style={{ padding: '3rem 0' }}>
       <h3 style={{ fontSize: '1.8rem', marginBottom: '1.5rem' }}>Book a Cleaning</h3>
-      {success && <p className="success-message">Request submitted! We'll be in touch shortly.</p>}
+      {success && <p className="success-message">Request submitted! We&apos;ll be in touch shortly.</p>}
 
       <form onSubmit={handleSubmit} style={{ maxWidth: '600px', display: 'grid', gap: '1rem' }}>
         <input
@@ -142,9 +142,13 @@ export default function BookingForm() {
         </select>
         <label className="form-label">Select Date & Time</label>
         <DatePicker
-  selected={formData.requestedDateTime}
-  onChange={(date: Date) => setFormData({ ...formData, requestedDateTime: date })}
-  showTimeSelect
+  selected={formData.requestedDateTime ?? undefined}
+  onChange={(date: Date | null) => {
+    if (date) {
+      setFormData({ ...formData, requestedDateTime: date })
+    }
+  }}
+    showTimeSelect
   dateFormat="Pp"
   minDate={new Date()}
   minTime={new Date(new Date().setHours(7, 0, 0, 0))}

@@ -20,15 +20,15 @@ export default function AboutPage() {
         <section className="about-content">
           <h1>About Us</h1>
           <p>
-            At <strong>Lary’s Cleaning Services</strong>, we believe a clean home is a happy home.
+            At <strong>Lary&apos;s Cleaning Services</strong>, we believe a clean home is a happy home.
             Based in Washington State, we bring professionalism, care, and a personal touch to every job we do.
           </p>
           <p>
             Founded by Lary herself, our company is built on integrity, reliability, and love for the community.
-            Whether it’s a one-time deep clean or recurring service, we treat your home like our own.
+            Whether it&apos;s a one-time deep clean or recurring service, we treat your home like our own.
           </p>
           <p>
-            Our mission is simple: deliver top-tier cleaning with a smile. When you book with us, you're supporting
+            Our mission is simple: deliver top-tier cleaning with a smile. When you book with us, you&apos;re supporting
             a small, woman-owned business that puts family and customer satisfaction first.
           </p>
 

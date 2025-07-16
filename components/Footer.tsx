@@ -36,43 +36,52 @@ export default function Footer() {
   )
 }
 
-const footerStyles = {
-  wrapper: {
-    backgroundColor: '#fef6fb',
-    color: '#444',
-    paddingTop: '2rem',
-    paddingBottom: '1rem',
-    borderTop: '1px solid #eee',
-    marginTop: '3rem',
-  },
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-    maxWidth: '1000px',
-    margin: '0 auto',
-    padding: '0 1rem',
-    gap: '2rem',
-  },
-  section: {
-    flex: '1 1 250px',
-  },
-  title: {
-    color: '#cc2e6d',
-    marginBottom: '0.5rem',
-  },
-  list: {
-    listStyle: 'none',
-    padding: 0,
-    margin: 0,
-  },
-  link: {
-    textDecoration: 'none',
-    color: '#cc2e6d',
-  },
-  bottom: {
-    textAlign: 'center',
-    marginTop: '2rem',
-    fontSize: '0.85rem',
-  },
-}
+const footerStyles: {
+    wrapper: React.CSSProperties;
+    container: React.CSSProperties;
+    section: React.CSSProperties;
+    title: React.CSSProperties;
+    list: React.CSSProperties;
+    link: React.CSSProperties;
+    bottom: React.CSSProperties;
+  } = {
+    wrapper: {
+      backgroundColor: '#fef6fb',
+      color: '#444',
+      paddingTop: '2rem',
+      paddingBottom: '1rem',
+      borderTop: '1px solid #eee',
+      marginTop: '3rem',
+    },
+    container: {
+      display: 'flex',
+      flexWrap: 'wrap'as const,
+      justifyContent: 'space-around',
+      maxWidth: '1000px',
+      margin: '0 auto',
+      padding: '0 1rem',
+      gap: '2rem',
+    },
+    section: {
+      flex: '1 1 250px',
+    },
+    title: {
+      color: '#cc2e6d',
+      marginBottom: '0.5rem',
+    },
+    list: {
+      listStyle: 'none',
+      padding: 0,
+      margin: 0,
+    },
+    link: {
+      textDecoration: 'none',
+      color: '#cc2e6d',
+    },
+    bottom: {
+      textAlign: 'center',
+      marginTop: '2rem',
+      fontSize: '0.85rem',
+    },
+  };
+  

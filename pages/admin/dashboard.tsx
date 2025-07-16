@@ -4,19 +4,7 @@ import { useRouter } from 'next/router'
 import BookingsTable from '@/components/admin/BookingsTable'
 import ServiceManager from '@/components/admin/ServiceManager'
 import Link from 'next/link'
-
-
-
-
-interface Booking {
-  id: string
-  name: string
-  email: string
-  phone: string
-  address: string
-  serviceType?: { title: string }
-  requestedDateTime?: string
-}
+import { Booking } from '@/types/Booking';
 
 export default function AdminDashboard() {
   const router = useRouter()
@@ -40,11 +28,13 @@ export default function AdminDashboard() {
         if (!res.ok) throw new Error('Failed to fetch bookings')
         return res.json()
       })
-      .then((data) => setBookings(data.docs))
-      .catch((err) => {
-        setError(err.message)
-        router.push('/admin/login')
-      })
+      .then((data) => {
+        const formatted = data.docs.map((b: any) => ({
+          ...b,
+          requestedDateTime: b.requestedDateTime ? new Date(b.requestedDateTime) : null,
+        }));
+        setBookings(formatted);
+      });      
   }, [token])
 
   return (
@@ -65,7 +55,7 @@ export default function AdminDashboard() {
 </Link>
       </div>
       <hr className="section-divider" />
-      <BookingsTable bookings={bookings} setBookings={setBookings} token={token} />
+      <BookingsTable bookings={bookings as any} setBookings={setBookings} token={token} />
       <hr className="section-divider" />
       <ServiceManager token={token} />
 

@@ -202,9 +202,13 @@ const [newBooking, setNewBooking] = useState<Booking>({
         required
       />
       <DatePicker
-  selected={newBooking.requestedDateTime ? new Date(newBooking.requestedDateTime) : null}
-  onChange={(date: Date) => setNewBooking({ ...newBooking, requestedDateTime: date })}
-  showTimeSelect
+  selected={newBooking.requestedDateTime ? new Date(newBooking.requestedDateTime) : undefined}
+  onChange={(date: Date | null) => {
+    if (date) {
+      setNewBooking({ ...newBooking, requestedDateTime: date });
+    }
+  }}
+    showTimeSelect
   dateFormat="Pp"
   minDate={new Date()}
   minTime={new Date(new Date().setHours(7, 0, 0, 0))}
@@ -255,12 +259,11 @@ const [newBooking, setNewBooking] = useState<Booking>({
             />
             <DatePicker
   selected={editingBooking.requestedDateTime ? new Date(editingBooking.requestedDateTime) : null}
-  onChange={(date: Date) =>
-    setEditingBooking({
-      ...editingBooking!,
-      requestedDateTime: date,
-    })
-  }
+  onChange={(date: Date | null) => {
+    if (date) {
+      setNewBooking({ ...newBooking, requestedDateTime: date })
+    }
+  }}
   showTimeSelect
   dateFormat="Pp"
   minDate={new Date()}

@@ -47,7 +47,7 @@ export default function Header() {
             height={80}
             style={{ animation: 'slideInLeft 0.6s ease-out' }}
           />
-          <h1 style={{ fontSize: '1.6rem', color: '#cc2e6d', fontFamily: 'Georgia, serif', margin: 0 }}>Lary's Cleaning Services</h1>
+          <h1 style={{ fontSize: '1.6rem', color: '#cc2e6d', fontFamily: 'Georgia, serif', margin: 0 }}>Lary&apos;s Cleaning Services</h1>
         </Link>
 
         <nav style={{ display: 'flex', gap: '2rem' }}>

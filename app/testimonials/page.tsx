@@ -25,7 +25,7 @@ export default function TestimonialsPage() {
       <main className="testimonials-page">
         <h1 className="testimonials-title">What Our Clients Say</h1>
         <p className="testimonials-intro">
-          We’re proud of the relationships we’ve built and the homes we've transformed. Here’s what some
+          We&apos;re proud of the relationships we&apos;ve built and the homes we've transformed. Here&apos;s what some
           of our happy clients have to say:
         </p>
 
