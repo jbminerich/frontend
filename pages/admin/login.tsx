@@ -11,23 +11,26 @@ export default function AdminLogin() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-
-    const res = await fetch('http://192.168.254.156:3000/api/users/login', {
+  
+    const res = await fetch('https://laryscleaningservices.org/api/auth/local', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({
+        identifier: email,
+        password: password,
+      }),
     })
-
+  
     const data = await res.json()
-
-    if (res.ok && data.token) {
-      localStorage.setItem('payload-token', data.token)
+  
+    if (res.ok && data.jwt) {
+      localStorage.setItem('strapi-token', data.jwt)
       router.push('/admin/dashboard')
     } else {
-      setError(data.message || 'Login failed')
+      setError(data.error?.message || 'Login failed')
     }
   }
-
+  
   return (
     <div className="admin-login-wrapper">
       <div className="admin-login-card">

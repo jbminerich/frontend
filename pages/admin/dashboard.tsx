@@ -11,7 +11,7 @@ export default function AdminDashboard() {
   const [bookings, setBookings] = useState<Booking[]>([])
   const [error, setError] = useState('')
 
-  const token = typeof window !== 'undefined' ? localStorage.getItem('payload-token') : null
+  const token = typeof window !== 'undefined' ? localStorage.getItem('strapi-token') : null
 
   useEffect(() => {
     if (!token) {
@@ -19,9 +19,9 @@ export default function AdminDashboard() {
       return
     }
 
-    fetch('http://192.168.254.156:3000/api/bookingRequests?depth=1', {
+    fetch('https://laryscleaningservices.org/api/booking-requests?populate=service', {
       headers: {
-        Authorization: `JWT ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     })
       .then((res) => {
@@ -29,12 +29,20 @@ export default function AdminDashboard() {
         return res.json()
       })
       .then((data) => {
-        const formatted = data.docs.map((b: any) => ({
-          ...b,
-          requestedDateTime: b.requestedDateTime ? new Date(b.requestedDateTime) : null,
-        }));
-        setBookings(formatted);
-      });      
+        const formatted = data.data.map((entry: any) => ({
+          id: entry.id,
+          name: entry.name || '',
+          email: entry.email || '',
+          phone: entry.phone || '',
+          address: entry.address || '',
+          requestedDateTime: entry.requestedDateTime ? new Date(entry.requestedDateTime) : null,
+          bookingStatus: entry.bookingStatus || '',
+          service: entry.service?.Title || 'Unknown',
+        }))
+
+        setBookings(formatted)
+      })
+      .catch((err) => setError(err.message))
   }, [token])
 
   return (
@@ -44,15 +52,15 @@ export default function AdminDashboard() {
         <button
           className="logout-button"
           onClick={() => {
-            localStorage.removeItem('payload_token')
+            localStorage.removeItem('strapi-token')
             router.push('/admin/login')
           }}
         >
           Log Out
         </button>
         <Link href="/admin/clients" className="btn btn-secondary">
-  Manage Clients
-</Link>
+          Manage Clients
+        </Link>
       </div>
       <hr className="section-divider" />
       <BookingsTable bookings={bookings as any} setBookings={setBookings} token={token} />

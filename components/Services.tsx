@@ -1,69 +1,74 @@
-'use client'
+'use client';
 
-import { useEffect, useState, useRef } from 'react'
-import Image from 'next/image'
+import { useEffect, useState, useRef } from 'react';
+import Image from 'next/image';
+import axios from 'axios';
 
 type Service = {
-  id: string
-  title: string
-  description: string
-  price?: number
-}
+  id: string;
+  documentId: string;
+  Title: string;
+  Description: string;
+  Price: string;
+};
 
 export default function Services() {
-  const [services, setServices] = useState<Service[]>([])
-  const [activeId, setActiveId] = useState<string | null>(null)
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [isAuto, setIsAuto] = useState(true)
-  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  const [services, setServices] = useState<Service[]>([]);
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAuto, setIsAuto] = useState(true);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Fetch services from Payload CMS
+  // Fetch services from Strapi
   useEffect(() => {
     const fetchServices = async () => {
-      const res = await fetch('http://192.168.254.156:3000/api/services')
-      const json = await res.json()
-      setServices(json.docs)
-    }
+      try {
+        const response = await axios.get('https://laryscleaningservices.org/api/services');
+        setServices(response.data.data || []);  // Safely handle response from Strapi
+      } catch (error) {
+        console.error('Error fetching services:', error);
+      }
+    };
 
-    fetchServices()
-  }, [])
+    fetchServices();
+  }, []);
 
   // Auto-cycle through services every 6 seconds
   useEffect(() => {
-    if (!isAuto || services.length === 0) return
+    if (!isAuto || services.length === 0) return;
 
     intervalRef.current = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % services.length)
-    }, 6000)
+      setCurrentIndex((prev) => (prev + 1) % services.length);
+    }, 6000);
 
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current)
-    }
-  }, [isAuto, services])
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [isAuto, services]);
 
   // Update expanded service when index changes
   useEffect(() => {
     if (services.length > 0) {
-      setActiveId(services[currentIndex]?.id)
+      setActiveId(services[currentIndex]?.id);
     }
-  }, [currentIndex, services])
+  }, [currentIndex, services]);
 
   // Manual toggle with pause
   const toggle = (id: string) => {
-    setIsAuto(false) // stop auto-cycle when user interacts
-    setActiveId((prev) => (prev === id ? null : id))
+    setIsAuto(false); // Stop auto-cycle when user interacts
+    setActiveId((prev) => (prev === id ? null : id));
 
-    const manualIndex = services.findIndex((s) => s.id === id)
+    const manualIndex = services.findIndex((s) => s.id === id);
     if (manualIndex !== -1) {
-      setCurrentIndex(manualIndex)
+      setCurrentIndex(manualIndex);
     }
-  }
+  };
 
   // Convert service title to image filename
   const getImage = (title: string) => {
-    const slug = title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '')
-    return `/images/services/${slug}.jpg` // Place your images in public/images/services/
-  }
+    const slug = (title ? title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '') : 'default-slug');
+    return `/images/services/${slug}.jpg`; // Ensure the images are correctly named in the public directory
+  };
 
   return (
     <section id="services" className="container" style={{ padding: '2rem 0' }}>
@@ -79,7 +84,7 @@ export default function Services() {
             }}
           >
             <button onClick={() => toggle(service.id)} className="service-button">
-              {service.title}
+              {service.Title}
             </button>
 
             {activeId === service.id && (
@@ -95,17 +100,17 @@ export default function Services() {
                 }}
               >
                 <div style={{ flex: '1 1 300px' }}>
-                  <p>{service.description}</p>
-                  {service.price && (
+                  <p>{service.Description}</p>
+                  {service.Price && (
                     <p>
-                      <strong>Price:</strong> ${service.price}
+                      <strong>Price:</strong> ${service.Price}
                     </p>
                   )}
                 </div>
                 <div style={{ flex: '1 1 300px', textAlign: 'center' }}>
                   <Image
-                    src={getImage(service.title)}
-                    alt={service.title}
+                    src={getImage(service.Title)}
+                    alt={service.Title || 'Default service image'}  // Fallback for alt text
                     width={300}
                     height={200}
                     style={{ borderRadius: '0.75rem', objectFit: 'cover' }}
@@ -117,5 +122,5 @@ export default function Services() {
         ))}
       </ul>
     </section>
-  )
+  );
 }

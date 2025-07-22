@@ -3,13 +3,17 @@
 import { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-
-
+import axios from 'axios';
 
 type Service = {
-  id: string;
-  title: string;
+  id: number;
+  documentId?: string;
+  Title: string;
+  Description?: string;
+  Price?: string | null;
 };
+
+
 
 export default function BookingForm() {
   const [services, setServices] = useState<Service[]>([]);
@@ -18,20 +22,25 @@ export default function BookingForm() {
     email: '',
     phone: '',
     address: '',
-    serviceType: '',
+    serviceType: '' as string | number,
     requestedDateTime: new Date(),
   });
+  
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     const fetchServices = async () => {
-      const res = await fetch('http://192.168.254.156:3000/api/services');
-      const json = await res.json();
-      setServices(json.docs);
+      try {
+        const res = await axios.get('https://laryscleaningservices.org/api/services');
+        setServices(res.data.data); // Use raw response, it's already flat
+      } catch (error) {
+        console.error('Error fetching services:', error);
+      }
     };
-
+  
     fetchServices();
   }, []);
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -46,49 +55,67 @@ export default function BookingForm() {
           : digits;
       setFormData(prev => ({ ...prev, [name]: formatted }));
     } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
+      // Ensure that the serviceType is always a number
+      setFormData(prev => ({
+        ...prev,
+        [name]: name === 'serviceType' ? parseInt(value, 10) : value,  // Parse serviceType as a number
+      }));
     }
-  };
+  };  
+
   function getLocalDateTimeString() {
     const now = new Date();
     const offset = now.getTimezoneOffset();
     const local = new Date(now.getTime() - offset * 60000);
     return local.toISOString().slice(0, 16);
   }
-  
-  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
   
+    // Ensure the serviceType is a valid number (ID)
     const payload = {
-      ...formData,
-      serviceType: formData.serviceType, // explicitly passing the ID for the relationship field
-      requestedDateTime: new Date(formData.requestedDateTime).toISOString(), // just in case
+      data: {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        service: formData.serviceType,  // Correctly sending the ID of the service
+        requestedDateTime: new Date(formData.requestedDateTime).toISOString(),
+        bookingStatus: 'Pending', // Default status
+      },
     };
   
-    const res = await fetch('http://192.168.254.156:3000/api/bookingRequests', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload), // << use the corrected payload
-    });
-  
-    if (res.ok) {
-      setSuccess(true);
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        address: '',
-        serviceType: '',
-        requestedDateTime: new Date(),
+    try {
+      const res = await axios.post('https://laryscleaningservices.org/api/booking-requests', payload, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
-    } else {
+    
+      console.log('Booking response:', res.status, res.data);
+    
+      if (res.status === 200 || res.status === 201) {
+        setSuccess(true);
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          address: '',
+          serviceType: '',
+          requestedDateTime: new Date(),
+        });
+      } else {
+        console.error('Unexpected status code:', res.status);
+        alert('There was an error submitting your request.');
+      }
+    } catch (error) {
+      console.error('Error submitting booking request:', error);
       alert('There was an error submitting your request.');
     }
+    
   };
   
-
   return (
     <section id="booking" className="container" style={{ padding: '3rem 0' }}>
       <h3 style={{ fontSize: '1.8rem', marginBottom: '1.5rem' }}>Book a Cleaning</h3>
@@ -128,6 +155,7 @@ export default function BookingForm() {
           required
           className="form-input"
         />
+        
         <select
           name="serviceType"
           value={formData.serviceType}
@@ -137,31 +165,29 @@ export default function BookingForm() {
         >
           <option value="">Select a Service</option>
           {services.map(service => (
-            <option key={service.id} value={service.id}>{service.title}</option>
+            <option key={service.id} value={service.id}>
+              {service.Title}
+            </option>
           ))}
         </select>
+
+
         <label className="form-label">Select Date & Time</label>
         <DatePicker
-  selected={formData.requestedDateTime ?? undefined}
-  onChange={(date: Date | null) => {
-    if (date) {
-      setFormData({ ...formData, requestedDateTime: date })
-    }
-  }}
-    showTimeSelect
-  dateFormat="Pp"
-  minDate={new Date()}
-  minTime={new Date(new Date().setHours(7, 0, 0, 0))}
-  maxTime={new Date(new Date().setHours(20, 0, 0, 0))}
-  className="form-input"
-/>
-
-
-
-        <button
-          type="submit"
-          className="submit-button"
-        >
+          selected={formData.requestedDateTime ?? undefined}
+          onChange={(date: Date | null) => {
+            if (date) {
+              setFormData({ ...formData, requestedDateTime: date });
+            }
+          }}
+          showTimeSelect
+          dateFormat="Pp"
+          minDate={new Date()}
+          minTime={new Date(new Date().setHours(7, 0, 0, 0))}
+          maxTime={new Date(new Date().setHours(20, 0, 0, 0))}
+          className="form-input"
+        />
+        <button type="submit" className="submit-button">
           Submit Request
         </button>
       </form>
